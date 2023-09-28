@@ -1,6 +1,5 @@
 import { LitElement, html, css } from 'lit';
 
-const logo = new URL('../assets/open-wc-logo.svg', import.meta.url).href;
 
 class MyCard extends LitElement {
   static properties = {
@@ -34,6 +33,7 @@ class MyCard extends LitElement {
 .wrapper {
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 .container {
@@ -105,53 +105,74 @@ class MyCard extends LitElement {
 }`
 
 
-  constructor() {
-    super();
-    this.header = 'My app';
-  }
 
-  render() {
-    return html`
-      <main>
-      <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="styles.css">
-<title>Card</title>
+constructor() {
+  super();
+}
 
-<div class="wrapper">
-  <div class="container" data-card="1">
-    <div class="card">
-      <div class="card-content">
-        <h2 class="card-title">HAX PSU</h2>
-        <img src="https://hax.camp/assets/haxBanner-01.png" alt="Card Image">
-        <div class="description-toggle">
-          <div class="description">Hax Camp 2022</div>
-          <div class="toggle-button">Toggle Description</div>
-        </div>
-        <a class="details-link" href="https://hax.psu.edu">Details</a>
-      </div>
-    </div>
-  </div>
-</div>
+duplicateCard() {
+  const cards = this.shadowRoot.querySelectorAll('.container');
+  const clone = cards[0].cloneNode(true);
+  clone.querySelector('.toggle-button').classList.remove('hidden');
+  this.shadowRoot.querySelector('.wrapper').appendChild(clone);
 
-<button class="duplicateButton">Duplicate Card</button>
-<button class="toggleColorButton">Toggle Color</button>
-<button class="changeTitleButton">Change Title</button>
-<button class="deleteCardButton">Delete Last Card</button>
-<script src="script.js"></script>
-      </main>
+  const toggleDescriptionButton = clone.querySelector('.toggle-button');
+  const cardDescription = clone.querySelector('.description');
+  toggleDescriptionButton.addEventListener('click', () => {
+    cardDescription.classList.toggle('hidden');
+  });
+}
 
-      <p class="app-footer">
-        🚽 Made with love by
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://github.com/open-wc"
-          >open-wc</a
-        >.
-      </p>
-    `;
+toggleColor() {
+  const originalCard = this.shadowRoot.querySelector('.container[data-card="1"]');
+  originalCard.classList.toggle('bg-toggle');
+}
+
+toggleDescription() {
+  const cardDescription = this.shadowRoot.querySelector('.description');
+  cardDescription.classList.toggle('hidden');
+}
+
+changeTitle() {
+  const cardTitle = this.shadowRoot.querySelector('.card-title');
+  cardTitle.textContent = 'something else';
+}
+
+deleteLastCard() {
+  const cards = this.shadowRoot.querySelectorAll('.container');
+  if (cards.length > 1) {
+    const lastCard = cards[cards.length - 1];
+    lastCard.remove();
   }
 }
 
+render() {
+  return html`
+    <main>
+      <div class="wrapper">
+        <div class="container" data-card="1">
+          <div class="card">
+            <div class="card-content">
+              <h2 class="card-title">HAX PSU</h2>
+              <img src="https://hax.camp/assets/haxBanner-01.png" alt="Card Image">
+              <div class="description-toggle">
+                <div class="description">Hax Camp 2022</div>
+                <div class="toggle-button" @click="${this.toggleDescription}">Toggle Description</div>
+              </div>
+              <a class="details-link" href="https://hax.psu.edu">Details</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button class="duplicateButton" @click="${this.duplicateCard}">Duplicate Card</button>
+      <button class="toggleColorButton" @click="${this.toggleColor}">Toggle Color</button>
+      <button class="changeTitleButton" @click="${this.changeTitle}">Change Title</button>
+      <button class="deleteCardButton" @click="${this.deleteLastCard}">Delete Last Card</button>
+    </main>
+  `;
+}
+}
+
 customElements.define('my-card', MyCard);
+
