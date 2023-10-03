@@ -3,7 +3,12 @@ import { LitElement, html, css } from 'lit';
 
 class MyCard extends LitElement {
   static properties = {
-    header: { type: String },
+    image: { type: String },
+    alt: { type: String },
+    title: { type: String },
+    description: { type: String },
+    link: { type: String },
+    dark: { type: Boolean, reflect: true }
   }
 
   static styles = css`
@@ -22,92 +27,95 @@ class MyCard extends LitElement {
     }
 
     body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  margin: 0;
-  background-color: white;
-}
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: white;
+  }
 
-.wrapper {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+  .wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 
-.container {
-  max-width: 400px;
-  border: 4px solid navy;
-  border-radius: 8px;
-  margin: 16px;
-  padding: 16px;
-  background-color: white;
-}
+  .container {
+    max-width: 400px;
+    border: 4px solid navy;
+    border-radius: 8px;
+    margin: 16px;
+    padding: 16px;
+    background-color: white;
+  }
 
-.container img {
-  width: 100%;
-  height: auto;
-  border-radius: 10px;
-}
+  .container img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+  }
 
-.card-content {
-  margin-top: 0;
-  text-align: center;
-}
+  .card-content {
+    margin-top: 0;
+    text-align: center;
+  }
 
-.card-title {
-  margin: 16px;
-  text-align: center;
-}
+  .card-title {
+    margin: 16px;
+    text-align: center;
+  }
 
-.description {
-  margin: 4px;
-}
+  .description {
+    margin: 4px;
+  }
 
-.description-toggle {
-  cursor: pointer;
-}
+  .description-toggle {
+    cursor: pointer;
+  }
 
-.toggle-button {
-  display: block;
-  text-align: center;
-  padding: 8px;
-  border: 4px solid black;
-  border-radius: 4px;
-  margin-top: 16px;
-  color: black;
-  background-color: lightblue;
-}
-.details-link {
-  display: none;
-  margin-top: 16px;
-  text-align: center;
-}
+  .toggle-button {
+    display: block;
+    text-align: center;
+    padding: 8px;
+    border: 4px solid black;
+    border-radius: 4px;
+    margin-top: 16px;
+    color: black;
+    background-color: lightblue;
+  }
+  .details-link {
+    display: none;
+    margin-top: 16px;
+    text-align: center;
+  }
 
-.bg-toggle {
-  background-color: darkgray;
-}
+  :host([dark]) .container {
+    background-color: darkgray;
+  }
 
-.toggle-button:hover,
-.toggle-button:focus {
-  background-color: lightgray;
-  color: black;
-}
+  .toggle-button:hover,
+  .toggle-button:focus {
+    background-color: lightgray;
+    color: black;
+  }
 
-.hidden {
-  display: none;
-}
-@media (max-width: 800px) {
-  .button-details {
+  .hidden {
     display: none;
   }
+  @media (max-width: 800px) {
+    .button-details {
+      display: none;
+    }
 }`
-
-
 
 constructor() {
   super();
+  this.image = 'https://picsum.photos/200/300';
+  this.alt = 'Card Image';
+  this.title = 'HAX PSU';
+  this.description = 'Hax Camp 2022';
+  this.link = 'https://hax.psu.edu';
 }
 
 duplicateCard() {
@@ -153,13 +161,13 @@ render() {
         <div class="container" data-card="1">
           <div class="card">
             <div class="card-content">
-              <h2 class="card-title">HAX PSU</h2>
-              <img src="https://hax.camp/assets/haxBanner-01.png" alt="Card Image">
+              <h2 class="card-title">${this.title}</h2>
+              <img src="${this.image}" alt="${this.alt}">
               <div class="description-toggle">
-                <div class="description">Hax Camp 2022</div>
+                <div class="description"><slot></slot>${this.description}</div>
                 <div class="toggle-button" @click="${this.toggleDescription}">Toggle Description</div>
               </div>
-              <a class="details-link" href="https://hax.psu.edu">Details</a>
+              <a class="details-link" href="${this.link}">Details</a>
             </div>
           </div>
         </div>
